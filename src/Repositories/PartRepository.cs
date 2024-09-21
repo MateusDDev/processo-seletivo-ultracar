@@ -2,6 +2,8 @@ using Ultracar.Database;
 using Ultracar.Models;
 using Ultracar.Repositories.Interfaces;
 
+namespace Ultracar.Repositories;
+
 public class PartRepository: IPartRepository
 {
     private readonly IUltracarContext _context;

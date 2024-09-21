@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Ultracar.Models;
+using Ultracar.Repositories.Interfaces;
 
 [ApiController]
 [Route("[controller]")]

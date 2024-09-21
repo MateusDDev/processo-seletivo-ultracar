@@ -13,6 +13,7 @@ builder.Services.AddScoped<IUltracarContext, UltracarContext>();
 builder.Services.AddScoped<IPartBudgetRepository, PartBudgetRepository>();
 builder.Services.AddScoped<IPartRepository, PartRepository>();
 builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

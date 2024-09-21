@@ -29,7 +29,7 @@ public class PartBudgetRepository: IPartBudgetRepository
         {
             BudgetId = partBudgetDTO.BudgetId,
             PartId = partBudgetDTO.PartId,
-            Status = "Pending"
+            Status = PartBudgetStatus.Pending
         }).Entity;
         _context.SaveChanges();
 

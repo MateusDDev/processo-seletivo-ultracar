@@ -41,34 +41,14 @@ namespace processo_seletivo_ultracar.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Deliveries",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Address = table.Column<string>(type: "text", nullable: false),
-                    BudgetId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Deliveries", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Deliveries_Budgets_BudgetId",
-                        column: x => x.BudgetId,
-                        principalTable: "Budgets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PartBudgets",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PartId = table.Column<int>(type: "integer", nullable: false),
-                    BudgetId = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    BudgetId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,6 +74,7 @@ namespace processo_seletivo_ultracar.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     QuantityMoved = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     PartId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -107,10 +88,30 @@ namespace processo_seletivo_ultracar.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Deliveries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    PartBudgetId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deliveries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Deliveries_PartBudgets_PartBudgetId",
+                        column: x => x.PartBudgetId,
+                        principalTable: "PartBudgets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Deliveries_BudgetId",
+                name: "IX_Deliveries_PartBudgetId",
                 table: "Deliveries",
-                column: "BudgetId");
+                column: "PartBudgetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PartBudgets_BudgetId",
@@ -135,10 +136,10 @@ namespace processo_seletivo_ultracar.Migrations
                 name: "Deliveries");
 
             migrationBuilder.DropTable(
-                name: "PartBudgets");
+                name: "StockMovements");
 
             migrationBuilder.DropTable(
-                name: "StockMovements");
+                name: "PartBudgets");
 
             migrationBuilder.DropTable(
                 name: "Budgets");

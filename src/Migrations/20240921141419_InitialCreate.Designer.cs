@@ -11,7 +11,7 @@ using Ultracar.Database;
 namespace processo_seletivo_ultracar.Migrations
 {
     [DbContext(typeof(UltracarContext))]
-    [Migration("20240920231454_InitialCreate")]
+    [Migration("20240921141419_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -60,12 +60,12 @@ namespace processo_seletivo_ultracar.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("BudgetId")
+                    b.Property<int>("PartBudgetId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BudgetId");
+                    b.HasIndex("PartBudgetId");
 
                     b.ToTable("Deliveries");
                 });
@@ -104,9 +104,8 @@ namespace processo_seletivo_ultracar.Migrations
                     b.Property<int>("PartId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -131,6 +130,10 @@ namespace processo_seletivo_ultracar.Migrations
                     b.Property<int>("QuantityMoved")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PartId");
@@ -140,13 +143,13 @@ namespace processo_seletivo_ultracar.Migrations
 
             modelBuilder.Entity("Ultracar.Models.Delivery", b =>
                 {
-                    b.HasOne("Ultracar.Models.Budget", "Budget")
+                    b.HasOne("Ultracar.Models.PartBudget", "PartBudget")
                         .WithMany()
-                        .HasForeignKey("BudgetId")
+                        .HasForeignKey("PartBudgetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Budget");
+                    b.Navigation("PartBudget");
                 });
 
             modelBuilder.Entity("Ultracar.Models.PartBudget", b =>
