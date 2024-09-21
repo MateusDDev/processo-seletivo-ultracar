@@ -7,10 +7,12 @@ namespace Ultracar.Repositories;
 public class PartRepository: IPartRepository
 {
     private readonly IUltracarContext _context;
+    private readonly IStockMovementsRepository _movementsRepository;
 
-    public PartRepository(IUltracarContext context)
+    public PartRepository(IUltracarContext context, IStockMovementsRepository movementsRepository)
     {
         _context = context;
+        _movementsRepository = movementsRepository;
     }
 
     public ICollection<Part> GetParts()
@@ -27,6 +29,14 @@ public class PartRepository: IPartRepository
             Stock = partDTO.Stock
         }).Entity;
         _context.SaveChanges();
+
+        _movementsRepository.AddStockMovement(new StockMovement
+        {
+            PartId = newPart.Id,
+            MovementDate = DateTime.UtcNow,
+            Quantity = newPart.Stock,
+            Type = StockMovementType.Entry
+        });
 
         return newPart;
     }

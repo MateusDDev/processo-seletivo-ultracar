@@ -10,11 +10,13 @@ public class DeliveryRepository : IDeliveryRepository
 {
     private readonly IUltracarContext _context;
     private readonly ViaCEP _service;
+    private readonly IStockMovementsRepository _movementsRepository;
 
-    public DeliveryRepository(IUltracarContext context)
+    public DeliveryRepository(IUltracarContext context, IStockMovementsRepository stockMovementsRepository)
     {
         _context = context;
         _service = new ViaCEP();
+        _movementsRepository = stockMovementsRepository;
     }
 
     public ICollection<Delivery> GetDeliveries()
@@ -40,12 +42,22 @@ public class DeliveryRepository : IDeliveryRepository
         partBudget.Status = PartBudgetStatus.Delivered;
 
         var address = await _service.GetAddress(cep);
-        var newDelivery = _context.Deliveries.Add(new Delivery
+        var newDelivery = _context.Deliveries.Add(
+        new Delivery
         {
             Address = $"{address.Estado} - {address.Localidade} - {address.Bairro} - {address.Logradouro}",
             PartBudgetId = partBudgetId
-        }).Entity;
+        }
+        ).Entity;
         _context.SaveChanges();
+
+        _movementsRepository.AddStockMovement(new StockMovement
+        {
+            MovementDate = DateTime.UtcNow,
+            PartId = partBudget.Part.Id,
+            Quantity = 1,
+            Type = StockMovementType.Exit
+        });
 
         return newDelivery;
     }
