@@ -4,9 +4,9 @@ using Ultracar.Repositories.Interfaces;
 
 public class PartRepository: IPartRepository
 {
-    private readonly UltracarContext _context;
+    private readonly IUltracarContext _context;
 
-    public PartRepository(UltracarContext context)
+    public PartRepository(IUltracarContext context)
     {
         _context = context;
     }

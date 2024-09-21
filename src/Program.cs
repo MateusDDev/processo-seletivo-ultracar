@@ -5,10 +5,14 @@ using Ultracar.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<UltracarContext>();
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<UltracarContext>();
+builder.Services.AddScoped<IUltracarContext, UltracarContext>();
+
 builder.Services.AddScoped<IPartBudgetRepository, PartBudgetRepository>();
 builder.Services.AddScoped<IPartRepository, PartRepository>();
+builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

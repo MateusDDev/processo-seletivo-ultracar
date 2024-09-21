@@ -6,9 +6,9 @@ namespace Ultracar.Repositories;
 
 public class PartBudgetRepository: IPartBudgetRepository
 {
-    private readonly UltracarContext _context;
+    private readonly IUltracarContext _context;
 
-    public PartBudgetRepository(UltracarContext context)
+    public PartBudgetRepository(IUltracarContext context)
     {
         _context = context;
     }
