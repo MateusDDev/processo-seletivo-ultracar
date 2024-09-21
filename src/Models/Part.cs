@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Ultracar.Models;
 
 public class Part
@@ -6,5 +8,12 @@ public class Part
     public string Name {get; set;} = null!;
     public int Stock {get; set;}
 
-    public ICollection<PartBudget> PartBudgets {get; set;}
+    [JsonIgnore]
+    public ICollection<PartBudget> PartBudgets {get; set;} = null!;
+}
+
+public class PartDTO
+{
+    public string Name {get; set;} = null!;
+    public int Stock {get; set;}
 }

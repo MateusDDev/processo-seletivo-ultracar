@@ -6,5 +6,5 @@ public class StockMovement
     public int QuantityMoved {get; set;}
 
     public int PartId {get; set;}
-    public Part Part {get; set;}
+    public Part Part {get; set;} = null!;
 }

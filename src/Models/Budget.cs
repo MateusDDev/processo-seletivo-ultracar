@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Ultracar.Models;
 
 public class Budget
@@ -7,5 +9,6 @@ public class Budget
     public string VehiclePlate {get; set;} = null!;
     public string ClientName {get; set;} = null!;
 
-    public ICollection<PartBudget> PartBudgets {get; set;}
+    [JsonIgnore]
+    public ICollection<PartBudget> PartBudgets {get; set;} = null!;
 }
