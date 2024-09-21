@@ -17,8 +17,12 @@ public class UltracarContext : DbContext, IUltracarContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-            string connectionString = "Host=localhost;Port=5432;Database=postgresDB;Username=user;Password=senhacriativa;";
-            optionsBuilder.UseNpgsql(connectionString);
+        var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+
+        string connectionString = $"Host={host};Port=5432;Database=postgresDB;Username=user;Password=senhacriativa;";
+        optionsBuilder.UseNpgsql(connectionString, builder => {
+            builder.EnableRetryOnFailure();
+        });
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
