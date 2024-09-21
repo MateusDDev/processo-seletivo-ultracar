@@ -33,7 +33,7 @@ public class PartController: ControllerBase
         try
         {
             var newPart = _repository.AddPart(partDTO);
-            return Ok(newPart);
+            return StatusCode(201, newPart);
         }
         catch (Exception ex)
         {

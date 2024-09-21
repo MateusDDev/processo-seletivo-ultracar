@@ -10,6 +10,12 @@ public class BudgetRepository: IBudgetRepository
         _context = context;
     }
 
+    public ICollection<Budget> GetBudgets()
+    {
+        var budgets = _context.Budgets.ToList();
+        return budgets;
+    }
+
     public Budget AddBudget(BudgetDTO budgetDTO)
     {
         var newBudget = _context.Budgets.Add(new Budget
@@ -21,11 +27,5 @@ public class BudgetRepository: IBudgetRepository
         _context.SaveChanges();
 
         return newBudget;
-    }
-
-    public ICollection<Budget> GetBudgets()
-    {
-        var budgets = _context.Budgets.ToList();
-        return budgets;
     }
 }

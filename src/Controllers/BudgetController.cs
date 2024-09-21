@@ -32,7 +32,7 @@ public class BudgetController: ControllerBase
         try
         {
             var newBudget = _repository.AddBudget(budgetDTO);
-            return Ok(newBudget);
+            return StatusCode(201, newBudget);
         }
         catch (Exception ex)
         {

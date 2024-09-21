@@ -4,5 +4,6 @@ namespace Ultracar.Repositories.Interfaces;
 
 public interface IPartBudgetRepository
 {
-    PartBudget AddPartToBudget(int budgetId, int partId);
+    ICollection<PartBudget> GetPartBudgets();
+    PartBudget AddPartToBudget(PartBudgetDTO partBudgetDTO);
 }

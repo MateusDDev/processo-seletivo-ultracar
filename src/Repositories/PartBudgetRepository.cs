@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Ultracar.Database;
 using Ultracar.Models;
 using Ultracar.Repositories.Interfaces;
@@ -13,16 +14,29 @@ public class PartBudgetRepository: IPartBudgetRepository
         _context = context;
     }
 
-    public PartBudget AddPartToBudget(int budgetId, int partId)
+    public ICollection<PartBudget> GetPartBudgets()
     {
-        var partBudget = new PartBudget
+        var partBudgets = _context.PartBudgets
+        .Include(pb => pb.Part)
+        .Include(pb => pb.Budget)
+        .ToList();
+        return partBudgets;
+    }
+
+    public PartBudget AddPartToBudget(PartBudgetDTO partBudgetDTO)
+    {
+        var newPartBudget = _context.PartBudgets.Add(new PartBudget
         {
-            BudgetId = budgetId,
-            PartId = partId,
+            BudgetId = partBudgetDTO.BudgetId,
+            PartId = partBudgetDTO.PartId,
             Status = "Pending"
-        };
-        var newPartBudget = _context.PartBudgets.Add(partBudget).Entity;
+        }).Entity;
         _context.SaveChanges();
+
+        var partBudget = _context.PartBudgets
+        .Include(pb => pb.Part)
+        .Include(pb => pb.Budget)
+        .First(pb => pb.Id == newPartBudget.Id);
 
         return newPartBudget;
     }
