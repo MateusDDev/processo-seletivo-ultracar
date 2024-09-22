@@ -28,12 +28,16 @@ public class PartBudgetController: ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddPartBudget(PartBudgetDTO partBudgetDTO)
+    public IActionResult AddPartToBudget(PartBudgetDTO partBudgetDTO)
     {
         try
         {
             var newPartBudget = _repository.AddPartToBudget(partBudgetDTO);
             return StatusCode(201, newPartBudget);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new {ex.Message});
         }
         catch (Exception ex)
         {

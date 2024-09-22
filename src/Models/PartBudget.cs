@@ -7,9 +7,11 @@ public class PartBudget
 {
     public int Id {get; set;}
     
+    [JsonIgnore]
     public int PartId {get; set;}
     public Part Part {get; set;} = null!;
 
+    [JsonIgnore]
     public int BudgetId {get; set;}
     public Budget Budget {get; set;} = null!;
 

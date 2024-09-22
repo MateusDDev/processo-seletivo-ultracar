@@ -33,10 +33,10 @@ public class DeliveryRepository : IDeliveryRepository
         .FirstOrDefault();
 
         if (partBudget == null)
-            throw new Exception("Peça relacionada ao orçamento não encontrada");
+            throw new KeyNotFoundException("Peça relacionada ao orçamento não encontrada");
 
-        if (partBudget.Status != PartBudgetStatus.Pending)
-            throw new Exception("Entrega já realizada");
+        if (partBudget.Status == PartBudgetStatus.Delivered)
+            throw new InvalidOperationException("Entrega já realizada");
         
         partBudget.Part.Stock -= 1;
         partBudget.Status = PartBudgetStatus.Delivered;
@@ -45,7 +45,7 @@ public class DeliveryRepository : IDeliveryRepository
         var newDelivery = _context.Deliveries.Add(
         new Delivery
         {
-            Address = $"{address.Estado} - {address.Localidade} - {address.Bairro} - {address.Logradouro}",
+            Address = $"{address.Estado}, {address.Localidade}, {address.Bairro}, {address.Logradouro}",
             PartBudgetId = partBudgetId
         }
         ).Entity;

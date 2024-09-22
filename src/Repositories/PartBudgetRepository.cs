@@ -25,6 +25,13 @@ public class PartBudgetRepository: IPartBudgetRepository
 
     public PartBudget AddPartToBudget(PartBudgetDTO partBudgetDTO)
     {
+        var part = _context.Parts.FirstOrDefault(p => p.Id == partBudgetDTO.PartId)
+        ?? throw new KeyNotFoundException("Peça não encontrada");
+
+        var budget = _context.Parts.FirstOrDefault(b => b.Id == partBudgetDTO.BudgetId)
+        ?? throw new KeyNotFoundException("Orçamento não encontrado");
+
+
         var newPartBudget = _context.PartBudgets.Add(new PartBudget
         {
             BudgetId = partBudgetDTO.BudgetId,

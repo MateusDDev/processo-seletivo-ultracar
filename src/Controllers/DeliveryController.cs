@@ -35,6 +35,14 @@ public class DeliveryController: ControllerBase
             var newDelivery = await _repository.DeliveryPart(deliveryDTO.PartBudgetId, deliveryDTO.Cep);
             return StatusCode(201, newDelivery);
         }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new {ex.Message});
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new {ex.Message});
+        }
         catch (Exception ex)
         {
             return StatusCode(500, new {ex.Message});
