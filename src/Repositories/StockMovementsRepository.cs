@@ -21,6 +21,16 @@ public class StockMovementsRepository : IStockMovementsRepository
         var stockMovements = _context.StockMovements.Where(sm => sm.PartId == partId).ToList();
         return stockMovements;
     }
+    
+    public StockMovement GetEntryStockMovementByPartId(int partId)
+    {
+        var movement = _context.StockMovements
+        .FirstOrDefault(sm => sm.Type == StockMovementType.Entry && sm.PartId == partId)
+        
+        ?? throw new KeyNotFoundException("Movimentação de estoque referente a peça não foi encontrada");
+
+        return movement;
+    }
 
     public StockMovement GetStockMovement(int stockMovementId)
     {

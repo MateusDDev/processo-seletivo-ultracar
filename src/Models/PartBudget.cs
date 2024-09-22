@@ -15,6 +15,8 @@ public class PartBudget
     public int BudgetId {get; set;}
     public Budget Budget {get; set;} = null!;
 
+    public int PartQuantity {get; set;}
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PartBudgetStatus Status {get; set;}
 }
@@ -26,6 +28,10 @@ public class PartBudgetDTO
 
     [Required]
     public int BudgetId {get; set;}
+
+    [Required]
+    [Range(1, 999, ErrorMessage = "A quantidade precisa ser maior que 1")]
+    public int PartQuantity {get; set;}
 }
 
 public enum PartBudgetStatus

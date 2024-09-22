@@ -41,15 +41,20 @@ public class DeliveryRepository : IDeliveryRepository
 
         if (partBudget.Status == PartBudgetStatus.Delivered)
             throw new InvalidOperationException("Entrega já realizada");
+
+        Console.WriteLine(partBudget.Part.Stock < partBudget.PartQuantity);
+
+        if (partBudget.Part.Stock < partBudget.PartQuantity)
+            throw new InvalidOperationException("A quantidade de peças excede a quantidade em estoque");
         
-        partBudget.Part.Stock -= 1;
+        partBudget.Part.Stock -= partBudget.PartQuantity;
         partBudget.Status = PartBudgetStatus.Delivered;
 
         var stockMovement = _stockMovementsRepository.AddStockMovement(new StockMovement
         {
             MovementDate = DateTime.UtcNow,
             PartId = partBudget.Part.Id,
-            Quantity = 1,
+            Quantity = partBudget.PartQuantity,
             Type = StockMovementType.Exit
         });
 
@@ -72,7 +77,7 @@ public class DeliveryRepository : IDeliveryRepository
         var delivery = GetDelivery(deliveryId);
 
         var partBudget = _partBudgetRepository.GetPartBudget(delivery.PartBudgetId);
-        partBudget.Part.Stock += 1;
+        partBudget.Part.Stock += partBudget.PartQuantity;
         partBudget.Status = PartBudgetStatus.Pending;
 
         _context.Deliveries.Remove(delivery);

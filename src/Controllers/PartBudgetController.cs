@@ -63,4 +63,43 @@ public class PartBudgetController: ControllerBase
         }
     }
 
+    [HttpPut("{id}")]
+    public IActionResult UpdateBudgetPart(int id, [FromBody] PartBudgetDTO partBudgetDTO)
+    {
+        try
+        {
+            var partBudget = _repository.UpdatePartBudget(partBudgetDTO, id);
+            return Ok(partBudget);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new {ex.Message});
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new {ex.Message});
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new {ex.Message});
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteBudgetPart(int id)
+    {
+        try
+        {
+            _repository.DeletePartBudget(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new {ex.Message});
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new {ex.Message});
+        }
+    }
 }

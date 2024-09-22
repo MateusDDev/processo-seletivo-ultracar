@@ -56,10 +56,7 @@ public class PartRepository: IPartRepository
         part.Name = partDTO.Name;
         part.Stock = partDTO.Stock;
 
-        var movement = _context.StockMovements
-        .FirstOrDefault(sm => sm.Type == StockMovementType.Entry && sm.PartId == part.Id)
-
-        ?? throw new KeyNotFoundException("Movimentação de estoque referente a peça não foi encontrada");
+        var movement = _movementsRepository.GetEntryStockMovementByPartId(partId);
 
         movement.MovementDate = DateTime.UtcNow;
         movement.Quantity = partDTO.Stock;
