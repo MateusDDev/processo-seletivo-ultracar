@@ -27,13 +27,31 @@ public class PartBudgetController: ControllerBase
         }
     }
 
+    [HttpGet("{id}")]
+    public IActionResult GetPartBudget(int id)
+    {
+        try
+        {
+            var partBudget = _repository.GetPartBudget(id);
+            return Ok(partBudget);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new {ex.Message});
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new {ex.Message});
+        }
+    }
+
     [HttpPost]
     public IActionResult AddPartToBudget(PartBudgetDTO partBudgetDTO)
     {
         try
         {
             var newPartBudget = _repository.AddPartToBudget(partBudgetDTO);
-            return StatusCode(201, newPartBudget);
+            return CreatedAtAction(nameof(GetPartBudget), new {id = newPartBudget.Id}, newPartBudget);
         }
         catch (KeyNotFoundException ex)
         {

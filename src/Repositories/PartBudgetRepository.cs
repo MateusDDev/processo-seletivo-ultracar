@@ -25,7 +25,11 @@ public class PartBudgetRepository: IPartBudgetRepository
 
     public PartBudget GetPartBudget(int partBudgetId)
     {
-        var partBudget = _context.PartBudgets.Include(pb => pb.Part).FirstOrDefault(pb => pb.Id == partBudgetId)
+        var partBudget = _context.PartBudgets
+        .Include(pb => pb.Part)
+        .Include(pb => pb.Budget)
+        .FirstOrDefault(pb => pb.Id == partBudgetId)
+
         ?? throw new KeyNotFoundException("Peça relacionada ao orçamento não encontrada");
 
         return partBudget;

@@ -24,4 +24,18 @@ public class StockMovementController: ControllerBase
             return StatusCode(500, new {ex.Message});
         }
     }
+
+    [HttpGet("{partId}")]
+    public IActionResult GetStockMovements(int partId)
+    {
+        try
+        {
+            var movements = _repository.GetStockMovementsByPartId(partId);
+            return Ok(movements);
+        }
+        catch (Exception ex) 
+        {
+            return StatusCode(500, new {ex.Message});
+        }
+    }
 }

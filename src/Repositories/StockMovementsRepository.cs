@@ -16,6 +16,12 @@ public class StockMovementsRepository : IStockMovementsRepository
         return movements;
     }
 
+    public ICollection<StockMovement> GetStockMovementsByPartId(int partId)
+    {
+        var stockMovements = _context.StockMovements.Where(sm => sm.PartId == partId).ToList();
+        return stockMovements;
+    }
+
     public StockMovement GetStockMovement(int stockMovementId)
     {
         var movement = _context.StockMovements.FirstOrDefault(s => s.Id == stockMovementId)

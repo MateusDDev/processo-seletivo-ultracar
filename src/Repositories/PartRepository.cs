@@ -21,6 +21,14 @@ public class PartRepository: IPartRepository
         return parts;
     }
 
+    public Part GetPart(int partId)
+    {
+        var part = _context.Parts.FirstOrDefault(p => p.Id == partId)
+        ?? throw new KeyNotFoundException("Peça não encontrada");
+
+        return part;
+    }
+
     public Part AddPart(PartDTO partDTO)
     {
         var newPart = _context.Parts.Add(new Part
@@ -39,5 +47,33 @@ public class PartRepository: IPartRepository
         });
 
         return newPart;
+    }
+
+    public Part UpdatePart(PartDTO partDTO, int partId)
+    {
+        var part = GetPart(partId);
+
+        part.Name = partDTO.Name;
+        part.Stock = partDTO.Stock;
+
+        var movement = _context.StockMovements
+        .FirstOrDefault(sm => sm.Type == StockMovementType.Entry && sm.PartId == part.Id)
+
+        ?? throw new KeyNotFoundException("Movimentação de estoque referente a peça não foi encontrada");
+
+        movement.MovementDate = DateTime.UtcNow;
+        movement.Quantity = partDTO.Stock;
+
+        _context.SaveChanges();
+
+        return part;
+    }
+
+    public void DeletePart(int partId)
+    {
+        var part = GetPart(partId);
+
+        _context.Parts.Remove(part);
+        _context.SaveChanges();
     }
 }

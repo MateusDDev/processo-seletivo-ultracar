@@ -11,6 +11,9 @@ public class Part
 
     [JsonIgnore]
     public ICollection<PartBudget> PartBudgets {get; set;} = null!;
+
+    [JsonIgnore]
+    public ICollection<StockMovement> StockMovements {get; set;} = null!;
 }
 
 public class PartDTO
