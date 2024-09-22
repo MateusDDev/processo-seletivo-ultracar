@@ -23,12 +23,20 @@ public class PartBudgetRepository: IPartBudgetRepository
         return partBudgets;
     }
 
+    public PartBudget GetPartBudget(int partBudgetId)
+    {
+        var partBudget = _context.PartBudgets.Include(pb => pb.Part).FirstOrDefault(pb => pb.Id == partBudgetId)
+        ?? throw new KeyNotFoundException("Peça relacionada ao orçamento não encontrada");
+
+        return partBudget;
+    }
+
     public PartBudget AddPartToBudget(PartBudgetDTO partBudgetDTO)
     {
         var part = _context.Parts.FirstOrDefault(p => p.Id == partBudgetDTO.PartId)
         ?? throw new KeyNotFoundException("Peça não encontrada");
 
-        var budget = _context.Parts.FirstOrDefault(b => b.Id == partBudgetDTO.BudgetId)
+        var budget = _context.Budgets.FirstOrDefault(b => b.Id == partBudgetDTO.BudgetId)
         ?? throw new KeyNotFoundException("Orçamento não encontrado");
 
 

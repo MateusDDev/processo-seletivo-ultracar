@@ -5,5 +5,7 @@ namespace Ultracar.Repositories.Interfaces;
 public interface IDeliveryRepository
 {
     ICollection<Delivery> GetDeliveries();
-    Task<Delivery> DeliveryPart(int partBudgetId, string cep);
+    Delivery GetDelivery(int deliveryId);
+    Task<Delivery> DeliveryPart(DeliveryDTO deliveryDTO);
+    void DeleteDelivery(int deliveryId);
 }

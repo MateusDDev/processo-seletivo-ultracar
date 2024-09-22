@@ -51,7 +51,7 @@ public class BudgetController: ControllerBase
         try
         {
             var newBudget = _repository.AddBudget(budgetDTO);
-            return CreatedAtAction(nameof(GetBudget), new {id = newBudget.Id});
+            return CreatedAtAction(nameof(GetBudget), new {id = newBudget.Id}, newBudget);
         }
         catch (Exception ex)
         {
@@ -66,6 +66,24 @@ public class BudgetController: ControllerBase
         {
             var updateBudget = _repository.UpdateBudget(budgetDTO, id);
             return Ok(updateBudget);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new {ex.Message});
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new {ex.Message});
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteBudget(int id)
+    {
+        try
+        {
+            _repository.DeleteBudget(id);
+            return NoContent();
         }
         catch (KeyNotFoundException ex)
         {

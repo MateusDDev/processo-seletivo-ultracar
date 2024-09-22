@@ -10,30 +10,34 @@ public class DeliveryRepository : IDeliveryRepository
 {
     private readonly IUltracarContext _context;
     private readonly ViaCEP _service;
-    private readonly IStockMovementsRepository _movementsRepository;
+    private readonly IStockMovementsRepository _stockMovementsRepository;
+    private readonly IPartBudgetRepository _partBudgetRepository;
 
-    public DeliveryRepository(IUltracarContext context, IStockMovementsRepository stockMovementsRepository)
+    public DeliveryRepository(IUltracarContext context, IStockMovementsRepository stockMovementsRepository, IPartBudgetRepository partBudgetRepository)
     {
         _context = context;
         _service = new ViaCEP();
-        _movementsRepository = stockMovementsRepository;
+        _stockMovementsRepository = stockMovementsRepository;
+        _partBudgetRepository = partBudgetRepository;
     }
 
     public ICollection<Delivery> GetDeliveries()
     {
-        var deliveries = _context.Deliveries.ToList();
+        var deliveries = _context.Deliveries.Include(d => d.StockMovement).ToList();
         return deliveries;
     }
 
-    public async Task<Delivery> DeliveryPart(int partBudgetId, string cep)
+    public Delivery GetDelivery(int deliveryId)
     {
-        var partBudget = _context.PartBudgets
-        .Where(pb => pb.Id == partBudgetId)
-        .Include(pb => pb.Part)
-        .FirstOrDefault();
+        var delivery = _context.Deliveries.FirstOrDefault(d => d.Id == deliveryId)
+        ?? throw new KeyNotFoundException("Entrega não encontrada");
 
-        if (partBudget == null)
-            throw new KeyNotFoundException("Peça relacionada ao orçamento não encontrada");
+        return delivery;
+    }
+
+    public async Task<Delivery> DeliveryPart(DeliveryDTO deliveryDTO)
+    {
+        var partBudget = _partBudgetRepository.GetPartBudget(deliveryDTO.PartBudgetId);
 
         if (partBudget.Status == PartBudgetStatus.Delivered)
             throw new InvalidOperationException("Entrega já realizada");
@@ -41,17 +45,7 @@ public class DeliveryRepository : IDeliveryRepository
         partBudget.Part.Stock -= 1;
         partBudget.Status = PartBudgetStatus.Delivered;
 
-        var address = await _service.GetAddress(cep);
-        var newDelivery = _context.Deliveries.Add(
-        new Delivery
-        {
-            Address = $"{address.Estado}, {address.Localidade}, {address.Bairro}, {address.Logradouro}",
-            PartBudgetId = partBudgetId
-        }
-        ).Entity;
-        _context.SaveChanges();
-
-        _movementsRepository.AddStockMovement(new StockMovement
+        var stockMovement = _stockMovementsRepository.AddStockMovement(new StockMovement
         {
             MovementDate = DateTime.UtcNow,
             PartId = partBudget.Part.Id,
@@ -59,6 +53,31 @@ public class DeliveryRepository : IDeliveryRepository
             Type = StockMovementType.Exit
         });
 
+        var address = await _service.FormattedAddress(deliveryDTO.Cep);
+        var newDelivery = _context.Deliveries.Add(
+        new Delivery
+        {
+            Address = address,
+            PartBudgetId = deliveryDTO.PartBudgetId,
+            StockMovementId = stockMovement.Id
+        }
+        ).Entity;
+        _context.SaveChanges();
+
         return newDelivery;
+    }
+
+    public void DeleteDelivery(int deliveryId)
+    {
+        var delivery = GetDelivery(deliveryId);
+
+        var partBudget = _partBudgetRepository.GetPartBudget(delivery.PartBudgetId);
+        partBudget.Part.Stock += 1;
+        partBudget.Status = PartBudgetStatus.Pending;
+
+        _context.Deliveries.Remove(delivery);
+        _stockMovementsRepository.DeleteStockMovement(delivery.StockMovementId);
+
+        _context.SaveChanges();
     }
 }

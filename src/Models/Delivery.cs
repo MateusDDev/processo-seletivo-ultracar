@@ -11,6 +11,10 @@ public class Delivery
     public int PartBudgetId {get; set;}
     [JsonIgnore]
     public PartBudget PartBudget {get; set;} = null!;
+
+    [JsonIgnore]
+    public int StockMovementId {get; set;}
+    public StockMovement StockMovement {get; set;} = null!;
 }
 
 public class DeliveryDTO

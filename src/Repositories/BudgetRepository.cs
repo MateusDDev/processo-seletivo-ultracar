@@ -41,8 +41,7 @@ public class BudgetRepository: IBudgetRepository
 
     public Budget UpdateBudget(BudgetDTO budgetDTO, int budgetId)
     {
-        var budget = _context.Budgets.FirstOrDefault(b => b.Id == budgetId)
-        ?? throw new KeyNotFoundException("Orçamento não encontrado");
+        var budget = GetBudget(budgetId);
 
         budget.ClientName = budgetDTO.ClientName;
         budget.Number = budgetDTO.Number;
@@ -50,5 +49,13 @@ public class BudgetRepository: IBudgetRepository
         _context.SaveChanges();
 
         return budget;
+    }
+
+    public void DeleteBudget(int budgetId)
+    {
+        var budget = GetBudget(budgetId);
+        
+        _context.Budgets.Remove(budget);
+        _context.SaveChanges();
     }
 }

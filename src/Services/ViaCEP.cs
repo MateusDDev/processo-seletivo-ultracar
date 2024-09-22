@@ -21,6 +21,12 @@ public class ViaCEP
 
         return address;
     }
+
+    public async Task<string> FormattedAddress(string cep)
+    {
+        var address = await GetAddress(cep);
+        return $"{address.Estado}, {address.Localidade}, {address.Bairro}, {address.Logradouro}";
+    }
 }
 
 public class ViaCepResponse
