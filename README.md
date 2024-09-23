@@ -16,8 +16,8 @@ Para executar a aplicação localmente, siga os passos abaixo:
 
 1. **Clone o repositório:**
     ```bash
-    git clone https://github.com/seu_usuario/nome_do_repositorio.git
-    cd nome_do_repositorio
+    git clone https://github.com/MateusDDev/processo-seletivo-ultracar
+    cd processo-seletivo-ultracar
     ```
 
 2. **Restaure as dependências do projeto:**
